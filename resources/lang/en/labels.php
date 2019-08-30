@@ -50,6 +50,12 @@ return [
                 ],
             ],
 
+            'tasks' => [
+                'create' => 'Create Task',
+                'edit' => 'Edit Task',
+                'management' => 'Task Management'
+            ],
+
             'users' => [
                 'active' => 'Active Users',
                 'all_permissions' => 'All Permissions',

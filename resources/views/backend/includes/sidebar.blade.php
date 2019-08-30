@@ -13,11 +13,20 @@
                 </a>
             </li>
 
-            <li class="nav-title">
-                @lang('menus.backend.sidebar.system')
+            <li class="nav-item">
+                <a class="nav-link {{
+                    active_class(Active::checkUriPattern('admin/task'))
+                }}" href="{{ route('admin.task.index') }}">
+                    <i class="nav-icon fas fa-clipboard-check"></i>
+                    Tasks
+                </a>
             </li>
 
             @if ($logged_in_user->isAdmin())
+                <li class="nav-title">
+                    @lang('menus.backend.sidebar.system')
+                </li>
+
                 <li class="nav-item nav-dropdown {{
                     active_class(Active::checkUriPattern('admin/auth*'), 'open')
                 }}">
