@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\v1\Admin;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TaskResource;
+use App\Http\Resources\TaskResourceCollection;
 
 class TaskApiController extends Controller
 {
@@ -15,17 +17,7 @@ class TaskApiController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return new TaskResourceCollection(Task::paginate());
     }
 
     /**
@@ -36,7 +28,17 @@ class TaskApiController extends Controller
      */
     public function store(Request $request)
     {
-        dd('API got here');
+        $valid = $request->validate([
+            'title' => 'required',
+            'body' => 'required',
+            'user_id' => 'required'
+        ]);
+
+        $valid->completed = request('completed') ?? 0;
+
+        $task = Task::create($valid);
+
+        return new TaskResource($task);
     }
 
     /**
@@ -45,20 +47,9 @@ class TaskApiController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function show(Task $task)
+    public function show(Task $task): TaskResource
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Task $task)
-    {
-        //
+        return new TaskResource($task);
     }
 
     /**
@@ -68,9 +59,15 @@ class TaskApiController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Task $task)
+    public function update(Request $request, Task $task): TaskResource
     {
-        //
+        $valid = request()->validate([
+            'title' => 'required',
+            'body' => 'required',
+        ]);
+        $request->completed ? $valid['completed'] = true : $valid['completed'] = false;
+        $task->update($valid);
+        return new TaskResource($task);
     }
 
     /**
@@ -81,6 +78,8 @@ class TaskApiController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+        $task->delete();
+
+        return response()->json();
     }
 }
