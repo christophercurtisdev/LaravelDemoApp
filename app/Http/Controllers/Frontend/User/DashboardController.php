@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Task;
 
 /**
  * Class DashboardController.
@@ -14,6 +15,8 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('frontend.user.dashboard');
+        $tasks = Task::where('user_id', auth()->id())->get();
+
+        return view('frontend.user.dashboard', compact('tasks'));
     }
 }
